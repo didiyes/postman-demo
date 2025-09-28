@@ -1,17 +1,21 @@
-name: Run Postman Tests
+name: QA Tests Pipeline
+
 on: [push]
 
 jobs:
-  test:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install Newman
-        run: npm install -g newman newman-reporter-html
-      - name: Run Postman tests
-        run: newman run QA_Demo_Collection.json -r cli,html --reporter-html-export report.html
-      - name: Upload report
-        uses: actions/upload-artifact@v3
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          name: postman-report
-          path: report.html
+          node-version: '16'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman tests
+        run: newman run postman_collection.json
