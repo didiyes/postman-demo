@@ -1,5 +1,4 @@
 name: QA Tests Pipeline
-
 on: [push]
 
 jobs:
@@ -14,8 +13,14 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Install Newman
-        run: npm install -g newman
+      - name: Install Newman + HTML Reporter
+        run: npm install -g newman newman-reporter-html
 
       - name: Run Postman tests
-        run: newman run postman_collection.json
+        run: newman run QA_Demo_Collection.json -r cli,html --reporter-html-export report.html
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v3
+        with:
+          name: postman-report
+          path: report.html
